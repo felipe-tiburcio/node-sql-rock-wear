@@ -4,6 +4,11 @@ const express = require("express");
 const app = express();
 const PORT = 8000;
 
+const { engine } = require("express-handlebars");
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", "./views");
+
 const mysql = require("mysql2");
 
 const { HOST, USER, PASSWORD, DATABASE } = process.env;
@@ -20,7 +25,9 @@ connection.connect((err) => {
 });
 
 app.get("/", (req, res) => {
-  res.send("<h1>Hello, Node!</h1>");
+  res.render("form.handlebars", {
+    myVar: 42,
+  });
 });
 
 app.listen(PORT, () => {
