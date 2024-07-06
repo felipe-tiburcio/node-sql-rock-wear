@@ -4,6 +4,8 @@ const express = require("express");
 const app = express();
 const PORT = 8000;
 
+app.use("/bootstrap", express.static("./node_modules/bootstrap/dist"));
+
 const { engine } = require("express-handlebars");
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
