@@ -7,6 +7,9 @@ const PORT = 8000;
 app.use("/bootstrap", express.static("./node_modules/bootstrap/dist"));
 app.use("/css", express.static("./public/css"));
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 const { engine } = require("express-handlebars");
 app.engine("handlebars", engine());
 app.set("view engine", "handlebars");
@@ -31,6 +34,11 @@ app.get("/", (req, res) => {
   res.render("form.handlebars", {
     myVar: 42,
   });
+});
+
+app.post("/save", (req, res) => {
+  console.log(req.body);
+  res.end();
 });
 
 app.listen(PORT, () => {
