@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const fileUpload = require("express-fileupload");
 const app = express();
 const PORT = 8000;
 
@@ -9,6 +10,8 @@ app.use("/css", express.static("./public/css"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(fileUpload());
 
 const { engine } = require("express-handlebars");
 app.engine("handlebars", engine());
@@ -38,6 +41,8 @@ app.get("/", (req, res) => {
 
 app.post("/save", (req, res) => {
   console.log(req.body);
+  console.log(req.files.image.name);
+  req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
   res.end();
 });
 
