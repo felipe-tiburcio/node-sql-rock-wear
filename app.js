@@ -5,6 +5,7 @@ const app = express();
 const PORT = 8000;
 
 app.use("/bootstrap", express.static("./node_modules/bootstrap/dist"));
+app.use("/css", express.static("./public/css"));
 
 const { engine } = require("express-handlebars");
 app.engine("handlebars", engine());
