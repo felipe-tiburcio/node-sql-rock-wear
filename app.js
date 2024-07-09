@@ -40,10 +40,22 @@ app.get("/", (req, res) => {
 });
 
 app.post("/save", (req, res) => {
-  console.log(req.body);
-  console.log(req.files.image.name);
-  req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
-  res.end();
+  const { name, price } = req.body;
+  const img = req.files.image.name;
+
+  const sql = `INSERT INTO products(name, price, image) VALUES('${name}', ${price}, '${img}')`;
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
+
+    console.log(ret);
+  });
+
+  res.redirect("/");
 });
 
 app.listen(PORT, () => {
