@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const fileUpload = require("express-fileupload");
+const fs = require("fs");
 const app = express();
 const PORT = 8000;
 
@@ -62,6 +63,25 @@ app.post("/save", (req, res) => {
     console.log(ret);
   });
 
+  res.redirect("/");
+});
+
+app.get("/remove/:id&:image", (req, res) => {
+  const sql = `DELETE FROM products WHERE ID = ${req.params.id}`;
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    fs.unlink(`${__dirname}/public/img/${req.params.image}`, (err) => {
+      if (err) {
+        console.log(`Error removing image: ${err}`);
+      }
+
+      console.log("Successfully image removal");
+    });
+  });
   res.redirect("/");
 });
 
