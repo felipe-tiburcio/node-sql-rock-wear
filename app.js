@@ -34,8 +34,14 @@ connection.connect((err) => {
 });
 
 app.get("/", (req, res) => {
-  res.render("form.handlebars", {
-    myVar: 42,
+  const sql = "SELECT * FROM products";
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    res.render("form", { products: ret });
   });
 });
 
