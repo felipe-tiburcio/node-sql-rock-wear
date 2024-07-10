@@ -7,6 +7,7 @@ const PORT = 8000;
 
 app.use("/bootstrap", express.static("./node_modules/bootstrap/dist"));
 app.use("/css", express.static("./public/css"));
+app.use("/img", express.static("./public/img"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
