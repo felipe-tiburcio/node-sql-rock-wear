@@ -85,6 +85,22 @@ app.get("/remove/:id&:image", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/update/:id", (req, res) => {
+  const { id } = req.params;
+
+  let sqlSelect = `SELECT * FROM products WHERE ID = ${id} `;
+
+  connection.query(sqlSelect, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    const { id, name, price, image } = ret[0];
+
+    res.render("update", { id, name, price, image });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at port ${PORT}`);
 });

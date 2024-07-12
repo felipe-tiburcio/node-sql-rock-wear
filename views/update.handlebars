@@ -1,0 +1,35 @@
+<main>
+  <div class="container">
+    <div class="row">
+      <div class="col-6 offset-3">
+        <form action="/update" method="post" enctype="multipart/form-data">
+          <img src="/img/{{image}}" alt="t-shirt image" class="" />
+          <input type="hidden" name="id" value="{{id}}" />
+          <input
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="Name"
+            value="{{name}}"
+          />
+          <input
+            type="number"
+            name="price"
+            class="form-control"
+            placeholder="Price"
+            value="{{price}}"
+          />
+          <input
+            type="file"
+            name="image"
+            class="form-control"
+            id=""
+            value="{{image}}"
+          />
+          <input type="submit" class="col-12 btn btn-warning" value="Update" />
+          <a href="/" class="col-12 btn btn-secondary">Cancel</a>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
