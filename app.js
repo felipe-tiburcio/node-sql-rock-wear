@@ -51,9 +51,9 @@ app.post("/save", (req, res) => {
   const { name, price } = req.body;
   const img = req.files.image.name;
 
-  const sql = `INSERT INTO products(name, price, image) VALUES('${name}', ${price}, '${img}')`;
+  const sql = `INSERT INTO products(name, price, image) VALUES(?, ?, ?)`;
 
-  connection.query(sql, (err, ret) => {
+  connection.query(sql, [name, price, img], (err, ret) => {
     if (err) {
       throw err;
     }
@@ -67,9 +67,11 @@ app.post("/save", (req, res) => {
 });
 
 app.get("/remove/:id&:image", (req, res) => {
-  const sql = `DELETE FROM products WHERE ID = ${req.params.id}`;
+  const id = req.params.id;
 
-  connection.query(sql, (err, ret) => {
+  const sql = `DELETE FROM products WHERE ID = ?`;
+
+  connection.query(sql, [id], (err, ret) => {
     if (err) {
       throw err;
     }
@@ -88,9 +90,9 @@ app.get("/remove/:id&:image", (req, res) => {
 app.get("/update/:id", (req, res) => {
   const { id } = req.params;
 
-  let sqlSelect = `SELECT * FROM products WHERE ID = ${id} `;
+  let sqlSelect = `SELECT * FROM products WHERE ID = ?`;
 
-  connection.query(sqlSelect, (err, ret) => {
+  connection.query(sqlSelect, [id], (err, ret) => {
     if (err) {
       throw err;
     }
@@ -98,6 +100,46 @@ app.get("/update/:id", (req, res) => {
     const { id, name, price, image } = ret[0];
 
     res.render("update", { id, name, price, image });
+  });
+});
+
+app.post("/sendUpdate", (req, res) => {
+  const { id, name, price, image } = req.body;
+  let newImage,
+    sqlUpdate,
+    requiredData = null;
+
+  try {
+    newImage = req.files.image.name || null;
+  } catch (err) {}
+
+  if (newImage) {
+    sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ? WHERE ID = ?;`;
+    requiredData = [name, price, newImage, id];
+  } else {
+    sqlUpdate = `UPDATE products SET name = ?, price = ? WHERE ID = ?;`;
+    requiredData = [name, price, id];
+  }
+
+  connection.query(sqlUpdate, requiredData, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    if (newImage) {
+      fs.unlink(`${__dirname}/public/img/${image}`, (err) => {
+        if (err) {
+          console.log(`Error removing image: ${err}`);
+        }
+
+        console.log("Successfully image removal");
+      });
+      console.log(ret);
+
+      req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
+    }
+
+    res.redirect("/");
   });
 });
 

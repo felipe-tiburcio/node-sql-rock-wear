@@ -2,8 +2,9 @@
   <div class="container">
     <div class="row">
       <div class="col-6 offset-3">
-        <form action="/update" method="post" enctype="multipart/form-data">
-          <img src="/img/{{image}}" alt="t-shirt image" class="" />
+        <form action="/sendUpdate" method="post" enctype="multipart/form-data">
+          <img src="/img/{{image}}" name="image" alt="t-shirt image" class="" />
+          <input type="hidden" name="image" value="{{image}}" />
           <input type="hidden" name="id" value="{{id}}" />
           <input
             type="text"
