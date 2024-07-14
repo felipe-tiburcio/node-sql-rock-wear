@@ -48,22 +48,30 @@ app.get("/", (req, res) => {
 });
 
 app.post("/save", (req, res) => {
-  const { name, price } = req.body;
-  const img = req.files.image.name;
+  try {
+    const { name, price } = req.body;
+    const img = req.files.image.name;
 
-  const sql = `INSERT INTO products(name, price, image) VALUES(?, ?, ?)`;
+    if (name === "" || price === "" || isNaN(price)) {
+      res.redirect("/errorPage");
+    } else {
+      const sql = `INSERT INTO products(name, price, image) VALUES(?, ?, ?)`;
 
-  connection.query(sql, [name, price, img], (err, ret) => {
-    if (err) {
-      throw err;
+      connection.query(sql, [name, price, img], (err, ret) => {
+        if (err) {
+          throw err;
+        }
+
+        req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
+
+        console.log(ret);
+      });
+
+      res.redirect("/confirmPage");
     }
-
-    req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
-
-    console.log(ret);
-  });
-
-  res.redirect("/");
+  } catch (error) {
+    res.redirect("/errorPage");
+  }
 });
 
 app.get("/remove/:id&:image", (req, res) => {
