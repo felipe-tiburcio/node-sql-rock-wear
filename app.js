@@ -117,38 +117,43 @@ app.post("/sendUpdate", (req, res) => {
     sqlUpdate,
     requiredData = null;
 
-  try {
-    newImage = req.files.image.name || null;
-  } catch (err) {}
-
-  if (newImage) {
-    sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ? WHERE ID = ?;`;
-    requiredData = [name, price, newImage, id];
+  if (name === "" || price === "" || isNaN(price)) {
+    res.redirect("/errorPage");
   } else {
-    sqlUpdate = `UPDATE products SET name = ?, price = ? WHERE ID = ?;`;
-    requiredData = [name, price, id];
-  }
-
-  connection.query(sqlUpdate, requiredData, (err, ret) => {
-    if (err) {
-      throw err;
-    }
+    try {
+      newImage = req.files.image.name || null;
+    } catch (err) {}
 
     if (newImage) {
-      fs.unlink(`${__dirname}/public/img/${image}`, (err) => {
-        if (err) {
-          console.log(`Error removing image: ${err}`);
-        }
-
-        console.log("Successfully image removal");
-      });
-      console.log(ret);
-
-      req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
+      sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ? WHERE ID = ?;`;
+      requiredData = [name, price, newImage, id];
+    } else {
+      sqlUpdate = `UPDATE products SET name = ?, price = ? WHERE ID = ?;`;
+      requiredData = [name, price, id];
     }
 
-    res.redirect("/");
-  });
+    connection.query(sqlUpdate, requiredData, (err, ret) => {
+      if (err) {
+        throw err;
+      }
+
+      if (newImage) {
+        fs.unlink(`${__dirname}/public/img/${image}`, (err) => {
+          if (err) {
+            console.log(`Error removing image: ${err}`);
+          }
+
+          console.log("Successfully image removal");
+        });
+
+        console.log(ret);
+
+        req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
+      }
+
+      res.redirect("/confirmPage");
+    });
+  }
 });
 
 app.listen(PORT, () => {
