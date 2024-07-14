@@ -75,24 +75,29 @@ app.post("/save", (req, res) => {
 });
 
 app.get("/remove/:id&:image", (req, res) => {
-  const id = req.params.id;
+  try {
+    const id = req.params.id;
 
-  const sql = `DELETE FROM products WHERE ID = ?`;
+    const sql = `DELETE FROM products WHERE ID = ?`;
 
-  connection.query(sql, [id], (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    fs.unlink(`${__dirname}/public/img/${req.params.image}`, (err) => {
+    connection.query(sql, [id], (err, ret) => {
       if (err) {
-        console.log(`Error removing image: ${err}`);
+        throw err;
       }
 
-      console.log("Successfully image removal");
+      fs.unlink(`${__dirname}/public/img/${req.params.image}`, (err) => {
+        if (err) {
+          console.log(`Error removing image: ${err}`);
+        }
+
+        console.log("Successfully image removal");
+      });
     });
-  });
-  res.redirect("/");
+
+    res.redirect("/confirmPage");
+  } catch (error) {
+    res.redirect("/errorPage");
+  }
 });
 
 app.get("/update/:id", (req, res) => {
