@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(fileUpload());
 
 const { engine } = require("express-handlebars");
-app.engine("handlebars", engine());
+app.engine("handlebars", engine({}));
 app.set("view engine", "handlebars");
 app.set("views", "./views");
 
@@ -33,6 +33,54 @@ const connection = mysql.createConnection({
 
 connection.connect((err) => {
   err ? console.error(err) : console.log("Connection Successful");
+});
+
+app.get("/productSaved", (req, res) => {
+  const sql = "SELECT * FROM products";
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    res.render("form", { products: ret, isDone: true });
+  });
+});
+
+app.get("/productUpdated", (req, res) => {
+  const sql = "SELECT * FROM products";
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    res.render("form", { products: ret, isUpdated: true });
+  });
+});
+
+app.get("/productRemoved", (req, res) => {
+  const sql = "SELECT * FROM products";
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    res.render("form", { products: ret, isRemoved: true });
+  });
+});
+
+app.get("/error", (req, res) => {
+  const sql = "SELECT * FROM products";
+
+  connection.query(sql, (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    res.render("form", { products: ret, isError: true });
+  });
 });
 
 app.get("/", (req, res) => {
@@ -53,7 +101,7 @@ app.post("/save", (req, res) => {
     const img = req.files.image.name;
 
     if (name === "" || price === "" || isNaN(price)) {
-      res.redirect("/errorPage");
+      res.redirect("/error");
     } else {
       const sql = `INSERT INTO products(name, price, image) VALUES(?, ?, ?)`;
 
@@ -67,10 +115,10 @@ app.post("/save", (req, res) => {
         console.log(ret);
       });
 
-      res.redirect("/confirmPage");
+      res.redirect("/productSaved");
     }
   } catch (error) {
-    res.redirect("/errorPage");
+    res.redirect("/error");
   }
 });
 
@@ -94,9 +142,9 @@ app.get("/remove/:id&:image", (req, res) => {
       });
     });
 
-    res.redirect("/confirmPage");
+    res.redirect("/productRemoved");
   } catch (error) {
-    res.redirect("/errorPage");
+    res.redirect("/error");
   }
 });
 
@@ -123,7 +171,7 @@ app.post("/sendUpdate", (req, res) => {
     requiredData = null;
 
   if (name === "" || price === "" || isNaN(price)) {
-    res.redirect("/errorPage");
+    res.redirect("/error");
   } else {
     try {
       newImage = req.files.image.name || null;
@@ -156,7 +204,7 @@ app.post("/sendUpdate", (req, res) => {
         req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
       }
 
-      res.redirect("/confirmPage");
+      res.redirect("/productUpdated");
     });
   }
 });

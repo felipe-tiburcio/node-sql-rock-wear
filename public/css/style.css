@@ -36,3 +36,7 @@ form img {
   aspect-ratio: 3 / 4;
   object-fit: cover;
 }
+
+.alert {
+  margin-top: 30px;
+}
