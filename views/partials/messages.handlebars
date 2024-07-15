@@ -1,0 +1,23 @@
+{{#if isDone}}
+  <div class="alert alert-success">
+    Product saved!
+  </div>
+{{/if}}
+
+{{#if isUpdated}}
+  <div class="alert alert-warning">
+    Product updated!
+  </div>
+{{/if}}
+
+{{#if isRemoved}}
+  <div class="alert alert-success">
+    Product removed!
+  </div>
+{{/if}}
+
+{{#if isError}}
+  <div class="alert alert-danger">
+    Something get wrong... please try again
+  </div>
+{{/if}}
