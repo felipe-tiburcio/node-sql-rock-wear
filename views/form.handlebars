@@ -16,35 +16,17 @@
             class="form-control"
             placeholder="Price"
           />
+          <select name="category" class="form-control">
+            <option value="">Category</option>
+            <option value="tshirts">T-Shirts</option>
+            <option value="pants">Pants</option>
+            <option value="tennis">Tennis</option>
+            <option value="accessories">Accessories</option>
+          </select>
           <input type="file" name="image" class="form-control" id="" />
           <input type="submit" class="col-12 btn btn-primary" value="Save" />
         </form>
       </div>
-    </div>
-  </div>
-  <div class="container">
-    <div class="row">
-
-      {{#each products}}
-
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-          <div class="card">
-            <img
-              src="img/{{image}}"
-              alt="rock band t-shirt"
-              class="img-aspect-ratio"
-            />
-            <div class="description">
-              <p>{{name}}</p>
-              <p>${{price}}</p>
-            </div>
-            <a href="/update/{{id}}" class="btn btn-warning">Update</a>
-            <a href="/remove/{{id}}&{{image}}" class="btn btn-danger">Remove</a>
-          </div>
-        </div>
-
-      {{/each}}
-
     </div>
   </div>
 </main>

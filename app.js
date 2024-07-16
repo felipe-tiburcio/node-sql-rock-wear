@@ -97,15 +97,15 @@ app.get("/", (req, res) => {
 
 app.post("/save", (req, res) => {
   try {
-    const { name, price } = req.body;
+    const { name, price, category } = req.body;
     const img = req.files.image.name;
 
-    if (name === "" || price === "" || isNaN(price)) {
+    if (name === "" || price === "" || isNaN(price) || category === "") {
       res.redirect("/error");
     } else {
-      const sql = `INSERT INTO products(name, price, image) VALUES(?, ?, ?)`;
+      const sql = `INSERT INTO products(name, price, category, image) VALUES(?, ?, ?, ?)`;
 
-      connection.query(sql, [name, price, img], (err, ret) => {
+      connection.query(sql, [name, price, category, img], (err, ret) => {
         if (err) {
           throw err;
         }
@@ -165,12 +165,12 @@ app.get("/update/:id", (req, res) => {
 });
 
 app.post("/sendUpdate", (req, res) => {
-  const { id, name, price, image } = req.body;
+  const { id, name, price, image, category } = req.body;
   let newImage,
     sqlUpdate,
     requiredData = null;
 
-  if (name === "" || price === "" || isNaN(price)) {
+  if (name === "" || price === "" || isNaN(price) || category === "") {
     res.redirect("/error");
   } else {
     try {
@@ -178,11 +178,11 @@ app.post("/sendUpdate", (req, res) => {
     } catch (err) {}
 
     if (newImage) {
-      sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ? WHERE ID = ?;`;
-      requiredData = [name, price, newImage, id];
+      sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ?, category = ? WHERE ID = ?;`;
+      requiredData = [name, price, newImage, category, id];
     } else {
-      sqlUpdate = `UPDATE products SET name = ?, price = ? WHERE ID = ?;`;
-      requiredData = [name, price, id];
+      sqlUpdate = `UPDATE products SET name = ?, price = ?, category = ? WHERE ID = ?;`;
+      requiredData = [name, price, category, id];
     }
 
     connection.query(sqlUpdate, requiredData, (err, ret) => {
