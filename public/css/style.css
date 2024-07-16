@@ -41,3 +41,17 @@ form img {
 .alert {
   margin-top: 30px;
 }
+
+.form-search {
+  margin: 0;
+}
+
+.form-search input,
+.form-search input[type="submit"] {
+  margin: 0;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+  margin-top: 0;
+}

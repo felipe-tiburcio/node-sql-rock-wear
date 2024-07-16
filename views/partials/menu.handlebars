@@ -1,0 +1,66 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">Node-MySQL</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link" href="/">Save Product</a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Show Products
+          </a>
+
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="/listar/todos">All products</a></li>
+            <li>
+              <a
+                class="dropdown-item"
+                href="/listar/alimenticio"
+              >Tshirts</a></li>
+            <li>
+              <a class="dropdown-item" href="/listar/eletronico">Pants</a></li>
+            <li>
+              <a class="dropdown-item" href="/listar/vestuario">Tennis</a>
+            </li>
+            <li>
+              <a class="dropdown-item" href="/listar/vestuario">Accessories</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <form class="d-flex form-search" method="post" action="/pesquisa">
+        <input
+          class="form-control me-2"
+          name="termo"
+          type="search"
+          placeholder="Searching something?"
+        />
+        <input type="submit" value="Search" class="btn btn-outline-primary" />
+      </form>
+    </div>
+  </div>
+</nav>
