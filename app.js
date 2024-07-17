@@ -85,11 +85,13 @@ app.post("/search", (req, res) => {
                OR category LIKE ?`;
 
   connection.query(sql, [`%${word}%`, `%${word}%`, `%${word}%`], (err, ret) => {
+    const noData = ret.length === 0;
+
     if (err) {
       throw err;
     }
 
-    res.render("list", { products: ret });
+    res.render("list", { products: ret, noData: noData });
   });
 });
 
