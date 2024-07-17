@@ -76,6 +76,23 @@ app.get("/list/:category", (req, res) => {
   });
 });
 
+app.post("/search", (req, res) => {
+  const { word } = req.body;
+
+  const sql = `SELECT * FROM products 
+               WHERE name LIKE ? 
+               OR price LIKE ?
+               OR category LIKE ?`;
+
+  connection.query(sql, [`%${word}%`, `%${word}%`, `%${word}%`], (err, ret) => {
+    if (err) {
+      throw err;
+    }
+
+    res.render("list", { products: ret });
+  });
+});
+
 app.post("/save", (req, res) => {
   try {
     const { name, price, category } = req.body;
