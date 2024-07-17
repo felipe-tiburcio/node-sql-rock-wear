@@ -21,6 +21,7 @@ app.set("view engine", "handlebars");
 app.set("views", "./views");
 
 const mysql = require("mysql2");
+const { log } = require("console");
 
 const { HOST, USER, PASSWORD, DATABASE } = process.env;
 
@@ -35,63 +36,43 @@ connection.connect((err) => {
   err ? console.error(err) : console.log("Connection Successful");
 });
 
+app.get("/", (req, res) => {
+  res.render("form");
+});
+
 app.get("/productSaved", (req, res) => {
-  const sql = "SELECT * FROM products";
-
-  connection.query(sql, (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    res.render("form", { products: ret, isDone: true });
-  });
+  res.render("form", { isDone: true });
 });
 
 app.get("/productUpdated", (req, res) => {
-  const sql = "SELECT * FROM products";
-
-  connection.query(sql, (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    res.render("form", { products: ret, isUpdated: true });
-  });
+  res.render("form", { isUpdated: true });
 });
 
 app.get("/productRemoved", (req, res) => {
-  const sql = "SELECT * FROM products";
-
-  connection.query(sql, (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    res.render("form", { products: ret, isRemoved: true });
-  });
+  res.render("form", { isRemoved: true });
 });
 
 app.get("/error", (req, res) => {
-  const sql = "SELECT * FROM products";
-
-  connection.query(sql, (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    res.render("form", { products: ret, isError: true });
-  });
+  res.render("form", { isError: true });
 });
 
-app.get("/", (req, res) => {
-  const sql = "SELECT * FROM products";
+app.get("/list/:category", (req, res) => {
+  const { category } = req.params;
+
+  let sql = "";
+
+  if (category === "all") {
+    sql = `SELECT * from products`;
+  } else {
+    sql = `SELECT * FROM products WHERE CATEGORY = '${category}'`;
+  }
 
   connection.query(sql, (err, ret) => {
     if (err) {
       throw err;
     }
 
-    res.render("form", { products: ret });
+    res.render("list", { products: ret });
   });
 });
 

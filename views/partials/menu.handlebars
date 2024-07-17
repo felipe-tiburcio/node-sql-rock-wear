@@ -18,7 +18,7 @@
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
         <li class="nav-item">
-          <a class="nav-link" href="/">Save Product</a>
+          <a class="nav-link" href="/">Save</a>
         </li>
 
         <li class="nav-item dropdown">
@@ -29,30 +29,24 @@
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Show Products
+            Show
           </a>
 
           <ul class="dropdown-menu">
             <li>
-              <a class="dropdown-item" href="/listar/todos">All products</a></li>
+              <a class="dropdown-item" href="/list/all">All products</a></li>
             <li>
-              <a
-                class="dropdown-item"
-                href="/listar/alimenticio"
-              >Tshirts</a></li>
+              <a class="dropdown-item" href="/list/male">Male</a></li>
             <li>
-              <a class="dropdown-item" href="/listar/eletronico">Pants</a></li>
+              <a class="dropdown-item" href="/list/female">Female</a></li>
             <li>
-              <a class="dropdown-item" href="/listar/vestuario">Tennis</a>
-            </li>
-            <li>
-              <a class="dropdown-item" href="/listar/vestuario">Accessories</a>
+              <a class="dropdown-item" href="/list/kids">Kids</a>
             </li>
           </ul>
         </li>
       </ul>
 
-      <form class="d-flex form-search" method="post" action="/pesquisa">
+      <form class="d-flex form-search" method="post" action="/search">
         <input
           class="form-control me-2"
           name="termo"
