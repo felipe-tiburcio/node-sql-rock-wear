@@ -5,6 +5,7 @@ const fileUpload = require("express-fileupload");
 const fs = require("fs");
 const app = express();
 const PORT = 8000;
+const connection = require("./database/connectionMySQL");
 
 app.use("/bootstrap", express.static("./node_modules/bootstrap/dist"));
 app.use("/css", express.static("./public/css"));
@@ -19,22 +20,6 @@ const { engine } = require("express-handlebars");
 app.engine("handlebars", engine({}));
 app.set("view engine", "handlebars");
 app.set("views", "./views");
-
-const mysql = require("mysql2");
-const { log } = require("console");
-
-const { HOST, USER, PASSWORD, DATABASE } = process.env;
-
-const connection = mysql.createConnection({
-  host: HOST,
-  user: USER,
-  password: PASSWORD,
-  database: DATABASE,
-});
-
-connection.connect((err) => {
-  err ? console.error(err) : console.log("Connection Successful");
-});
 
 app.get("/", (req, res) => {
   res.render("form");
