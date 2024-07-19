@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const fileUpload = require("express-fileupload");
-const fs = require("fs");
+const productService = require("./services/productService");
 const app = express();
 const PORT = 8000;
 const connection = require("./database/connectionMySQL");
@@ -22,176 +22,35 @@ app.set("view engine", "handlebars");
 app.set("views", "./views");
 
 app.get("/", (req, res) => {
-  res.render("form");
+  productService.saveForm(req, res);
 });
 
-app.get("/productSaved", (req, res) => {
-  res.render("form", { isDone: true });
-});
-
-app.get("/productUpdated", (req, res) => {
-  res.render("form", { isUpdated: true });
-});
-
-app.get("/productRemoved", (req, res) => {
-  res.render("form", { isRemoved: true });
-});
-
-app.get("/error", (req, res) => {
-  res.render("form", { isError: true });
+app.get("/:status", (req, res) => {
+  productService.saveFormWithStatus(req, res);
 });
 
 app.get("/list/:category", (req, res) => {
-  const { category } = req.params;
-
-  let sql = "";
-
-  if (category === "all") {
-    sql = `SELECT * from products`;
-  } else {
-    sql = `SELECT * FROM products WHERE CATEGORY = '${category}'`;
-  }
-
-  connection.query(sql, (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    res.render("list", { products: ret });
-  });
+  productService.listProducts(req, res);
 });
 
 app.post("/search", (req, res) => {
-  const { word } = req.body;
-
-  const sql = `SELECT * FROM products 
-               WHERE name LIKE ? 
-               OR price LIKE ?
-               OR category LIKE ?`;
-
-  connection.query(sql, [`%${word}%`, `%${word}%`, `%${word}%`], (err, ret) => {
-    const noData = ret.length === 0;
-
-    if (err) {
-      throw err;
-    }
-
-    res.render("list", { products: ret, noData: noData });
-  });
+  productService.search(req, res);
 });
 
 app.post("/save", (req, res) => {
-  try {
-    const { name, price, category } = req.body;
-    const img = req.files.image.name;
-
-    if (name === "" || price === "" || isNaN(price) || category === "") {
-      res.redirect("/error");
-    } else {
-      const sql = `INSERT INTO products(name, price, category, image) VALUES(?, ?, ?, ?)`;
-
-      connection.query(sql, [name, price, category, img], (err, ret) => {
-        if (err) {
-          throw err;
-        }
-
-        req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
-
-        console.log(ret);
-      });
-
-      res.redirect("/productSaved");
-    }
-  } catch (error) {
-    res.redirect("/error");
-  }
+  productService.saveProduct(req, res);
 });
 
-app.get("/remove/:id&:image", (req, res) => {
-  try {
-    const id = req.params.id;
-
-    const sql = `DELETE FROM products WHERE ID = ?`;
-
-    connection.query(sql, [id], (err, ret) => {
-      if (err) {
-        throw err;
-      }
-
-      fs.unlink(`${__dirname}/public/img/${req.params.image}`, (err) => {
-        if (err) {
-          console.log(`Error removing image: ${err}`);
-        }
-
-        console.log("Successfully image removal");
-      });
-    });
-
-    res.redirect("/productRemoved");
-  } catch (error) {
-    res.redirect("/error");
-  }
+app.delete("/remove/:id&:image", (req, res) => {
+  productService.removeProduct(req, res);
 });
 
 app.get("/update/:id", (req, res) => {
-  const { id } = req.params;
-
-  let sqlSelect = `SELECT * FROM products WHERE ID = ?`;
-
-  connection.query(sqlSelect, [id], (err, ret) => {
-    if (err) {
-      throw err;
-    }
-
-    const { id, name, price, image } = ret[0];
-
-    res.render("update", { id, name, price, image });
-  });
+  productService.updateForm(req, res);
 });
 
 app.post("/sendUpdate", (req, res) => {
-  const { id, name, price, image, category } = req.body;
-  let newImage,
-    sqlUpdate,
-    requiredData = null;
-
-  if (name === "" || price === "" || isNaN(price) || category === "") {
-    res.redirect("/error");
-  } else {
-    try {
-      newImage = req.files.image.name || null;
-    } catch (err) {}
-
-    if (newImage) {
-      sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ?, category = ? WHERE ID = ?;`;
-      requiredData = [name, price, newImage, category, id];
-    } else {
-      sqlUpdate = `UPDATE products SET name = ?, price = ?, category = ? WHERE ID = ?;`;
-      requiredData = [name, price, category, id];
-    }
-
-    connection.query(sqlUpdate, requiredData, (err, ret) => {
-      if (err) {
-        throw err;
-      }
-
-      if (newImage) {
-        fs.unlink(`${__dirname}/public/img/${image}`, (err) => {
-          if (err) {
-            console.log(`Error removing image: ${err}`);
-          }
-
-          console.log("Successfully image removal");
-        });
-
-        console.log(ret);
-
-        req.files.image.mv(__dirname + "/public/img/" + req.files.image.name);
-      }
-
-      res.redirect("/productUpdated");
-    });
-  }
+  productService.updateProduct(req, res);
 });
 
 app.listen(PORT, () => {
