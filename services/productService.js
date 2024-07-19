@@ -58,9 +58,9 @@ const listProducts = (req, res) => {
   let sql = "";
 
   if (category === "all") {
-    sql = `SELECT * from products`;
+    sql = `SELECT * from products ORDER BY RAND()`;
   } else {
-    sql = `SELECT * FROM products WHERE CATEGORY = '${category}'`;
+    sql = `SELECT * FROM products WHERE CATEGORY = '${category}' ORDER BY name`;
   }
 
   connection.query(sql, (err, ret) => {
@@ -154,17 +154,17 @@ const updateProduct = (req, res) => {
   let sqlUpdate,
     requiredData = null;
 
-  if (name === "" || price === "" || isNaN(price) || category === "") {
+  if (name === "" || price === "" || isNaN(price)) {
     res.redirect("/error");
   } else {
-    if (newImage !== "") {
+    if (newImage !== "" && category !== "") {
       sqlUpdate = `UPDATE products SET name = ?, price = ?, image = ?, category = ? WHERE ID = ?;`;
       requiredData = [name, price, newImage, category, id];
 
       replaceImg(image, req, res);
     } else {
-      sqlUpdate = `UPDATE products SET name = ?, price = ?, category = ? WHERE ID = ?;`;
-      requiredData = [name, price, category, id];
+      sqlUpdate = `UPDATE products SET name = ?, price = ? WHERE ID = ?;`;
+      requiredData = [name, price, id];
     }
 
     connection.query(sqlUpdate, requiredData, (err, ret) => {
