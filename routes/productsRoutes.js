@@ -24,7 +24,7 @@ router.post("/save", (req, res) => {
   productService.saveProduct(req, res);
 });
 
-router.delete("/remove/:id&:image", (req, res) => {
+router.get("/remove/:id&:image", (req, res) => {
   productService.removeProduct(req, res);
 });
 

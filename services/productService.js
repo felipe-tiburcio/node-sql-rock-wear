@@ -87,7 +87,7 @@ const search = (req, res) => {
       throw err;
     }
 
-    res.render("list", { products: ret, noData: noData });
+    res.render("list", { products: ret, isRemoved: true });
   });
 };
 
@@ -142,9 +142,9 @@ const removeProduct = (req, res) => {
       });
     });
 
-    res.redirect("/productRemoved");
+    res.render("form", { isRemoved: true });
   } catch (error) {
-    res.redirect("/error");
+    res.render("form", { isError: true });
   }
 };
 
@@ -172,7 +172,7 @@ const updateProduct = (req, res) => {
         throw err;
       }
 
-      res.redirect("/productUpdated");
+      res.render("form", { isUpdated: true });
     });
   }
 };
